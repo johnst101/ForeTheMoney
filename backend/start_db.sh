@@ -5,7 +5,7 @@ docker run --name forethemoney-db \
   -e POSTGRES_USER=forethemoney \
   -e POSTGRES_PASSWORD=forethemoney123 \
   -e POSTGRES_DB=forethemoney \
-  -p 5433:5433 \
+  -p 5432:5432 \
   -d postgres:15
 
 docker ps
