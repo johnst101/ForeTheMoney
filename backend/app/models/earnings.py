@@ -1,3 +1,7 @@
+"""
+Earnings model for storing player earnings data in the database.
+"""
+
 from ..db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
