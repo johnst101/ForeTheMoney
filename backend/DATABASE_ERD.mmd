@@ -17,7 +17,12 @@ erDiagram
     }
 
     POOLS {
-        int id PK "TODO: model incomplete (currently only id)"
+        int id PK
+        string name
+        string description
+        int owner_id FK
+        datetime created_at
+        datetime updated_at
     }
 
     POOL_LEADERBOARDS {
@@ -70,37 +75,39 @@ erDiagram
     }
 
     EARNINGS {
-        string year "TODO: no PK set in model"
-        string tournId "TODO: no FK set in model"
-        string playerID "TODO: no FK set in model"
+        string year
+        string tournId FK "FK declared to tournaments.id in model, but Tournament PK is tourn_id"
+        string playerID FK
         int earnings
         datetime timestamp
     }
 
-    TOURNAMENT_LEADERBOARD_MODEL {
-        string source_file "tournament_leaderboard.py"
-        string mapped_table "TODO: currently __tablename__ = earnings"
-        string class_name "TODO: currently class Earnings"
-    }
-
-    POOL_MEMBERSHIPS_SUGGESTED {
-        int id PK "Suggested missing table"
+    POOL_MEMBERSHIPS {
+        int id PK
         int pool_id FK
         int user_id FK
         string role
         datetime joined_at
+        bool is_active
     }
 
-    POOL_PICKS_SUGGESTED {
-        int id PK "Suggested missing table"
+    POOL_PICKS {
+        int id PK
         int pool_id FK
         int user_id FK
         int tournament_id FK
         int player_id FK
+        int tier
         int year
         int week_number
+        datetime created_at
     }
 
+    %% Notes:
+    %% - Earnings has no primary key defined in model.
+    %% - Earnings and PoolPicks both use tournaments.id in FK references, but Tournament defines tourn_id as the PK.
+
+    USERS ||--o{ POOLS : owns
     POOLS ||--o{ POOL_LEADERBOARDS : has_scores
     USERS ||--o{ POOL_LEADERBOARDS : has_scores
 
@@ -108,11 +115,9 @@ erDiagram
     PLAYERS ||..o{ EARNINGS : should_reference
     TOURNAMENTS ||..o{ EARNINGS : should_reference
 
-    TOURNAMENT_LEADERBOARD_MODEL ||..|| EARNINGS : currently_collides_with
-
-    POOLS ||..o{ POOL_MEMBERSHIPS_SUGGESTED : suggested_membership
-    USERS ||..o{ POOL_MEMBERSHIPS_SUGGESTED : suggested_membership
-    POOLS ||..o{ POOL_PICKS_SUGGESTED : suggested_pick_scope
-    USERS ||..o{ POOL_PICKS_SUGGESTED : suggested_picker
-    TOURNAMENTS ||..o{ POOL_PICKS_SUGGESTED : suggested_event
-    PLAYERS ||..o{ POOL_PICKS_SUGGESTED : suggested_player
+    POOLS ||--o{ POOL_MEMBERSHIPS : memberships
+    USERS ||--o{ POOL_MEMBERSHIPS : membership
+    POOLS ||--o{ POOL_PICKS : picks
+    USERS ||--o{ POOL_PICKS : user_picks
+    TOURNAMENTS ||--o{ POOL_PICKS : tournament_picks
+    PLAYERS ||--o{ POOL_PICKS : player_picks
