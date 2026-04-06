@@ -3,7 +3,7 @@ Schedule model for the PGA Tour schedule from the RapidAPI.
 """
 
 from ..db.database import Base
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 class Schedule(Base):
@@ -12,7 +12,7 @@ class Schedule(Base):
     id = Column(Integer, primary_key=True, index=True)
     year = Column(Integer, nullable=False, index=True)
     org_id = Column(Integer, nullable=False)
-    tourn_id = Column(Integer, nullable=False, index=True)
+    tourn_id = Column(Integer, ForeignKey("tournaments.id"), nullable=False, index=True)
     name = Column(String, nullable=False)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
