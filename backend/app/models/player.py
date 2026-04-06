@@ -13,4 +13,4 @@ class Player(Base):
     first_name = Column(String(200), nullable=False)
     last_name = Column(String(200), nullable=False)
 
-    # TODO: Add relationships
+    earnings = relationship("Earnings", back_populates="player")

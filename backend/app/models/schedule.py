@@ -20,4 +20,4 @@ class Schedule(Base):
     purse = Column(Integer, nullable=False)
     winners_share = Column(Integer)
 
-    # TODO: Add relationships
+    tournament = relationship("Tournament", back_populates="schedules")

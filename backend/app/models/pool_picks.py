@@ -19,4 +19,7 @@ class PoolPicks(Base):
     week_number = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
-    # TODO: Add relationships
+    pool = relationship("Pool", back_populates="picks")
+    user = relationship("User", back_populates="picks")
+    tournament = relationship("Tournament", back_populates="picks")
+    player = relationship("Player", back_populates="picks")

@@ -22,4 +22,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # TODO: Add relationships
+    pools = relationship("Pools", back_populates="users")
+    pool_memberships = relationship("PoolMemberships", back_populates="users")
+    picks = relationship("PoolPicks", back_populates="users")
+    pool_leaderboard = relationship("PoolLeaderboard", back_populates="users")

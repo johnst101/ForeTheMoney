@@ -27,3 +27,6 @@ class Tournament(Base):
     country = Column(String(200))
     state = Column(String(200))
     city = Column(String(200))
+
+    schedules = relationship("Schedule", back_populates="tournament")
+    earnings = relationship("Earnings", back_populates="tournament")

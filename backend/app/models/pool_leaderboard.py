@@ -18,4 +18,5 @@ class PoolLeaderboard(Base):
     score = Column(Integer, nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # TODO: Add relationships
+    pool = relationship("Pool", back_populates="pool_leaderboards")
+    user = relationship("User", back_populates="pool_leaderboards")

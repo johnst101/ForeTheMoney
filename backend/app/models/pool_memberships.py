@@ -16,4 +16,5 @@ class PooolMemberships(Base):
     joined_at = Column(DateTime, server_default=func.now(), nullable=False)
     is_active = Column(Boolean, default=True)
 
-    # TODO: Add relationships to Pool and User models
+    pool = relationship("Pool", back_populates="pool_memberships")
+    user = relationship("User", back_populates="pool_memberships")

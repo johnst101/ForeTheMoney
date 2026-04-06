@@ -15,4 +15,5 @@ class Earnings(Base):
     earnings = Column(Integer)
     timestamp = Column(DateTime, nullable=False)
 
-    # TODO: Add relationships
+    tournament = relationship("Tournament", back_populates="earnings")
+    player = relationship("Player", back_populates="earnings")
