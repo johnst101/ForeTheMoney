@@ -6,8 +6,8 @@ from ..db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 
-class Earnings(Base):
-    __tablename__ = "earnings"
+class TournamentLeaderboard(Base):
+    __tablename__ = "tournament_leaderboard"
 
     orgId = Column(String(1), index=True, nullable=False)
     year = Column(String(4), index=True, nullable=False)
@@ -25,4 +25,4 @@ class Earnings(Base):
     thru = Column(String(4), nullable=False)
     teeTime = Column(DateTime, nullable=True)
 
-    # TODO: Add relationships
+    player = relationship("Player", back_populates="tournament_leaderboard")
