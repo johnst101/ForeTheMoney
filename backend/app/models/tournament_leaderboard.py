@@ -3,7 +3,7 @@ Tournament Leaderboard model for storing tournament leaderboard data in the data
 """
 
 from ..db.database import Base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship
 
 class TournamentLeaderboard(Base):
