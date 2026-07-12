@@ -18,7 +18,7 @@ class Pools(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    owner = relationship("User", back_populates="pools")
-    pool_memberships = relationship("PoolMemberships", back_populates="pool")
-    picks = relationship("PoolPicks", back_populates="pool")
-    pool_leaderboard = relationship("PoolLeaderboard", back_populates="pool")
+    owner = relationship("Users", back_populates="pools")
+    pool_memberships = relationship("PoolMemberships", back_populates="pool", cascade="all, delete-orphan")
+    pool_picks = relationship("PoolPicks", back_populates="pool", cascade="all, delete-orphan")
+    pool_leaderboards = relationship("PoolLeaderboards", back_populates="pool", cascade="all, delete-orphan")

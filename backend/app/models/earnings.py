@@ -9,11 +9,11 @@ from sqlalchemy.orm import relationship
 class Earnings(Base):
     __tablename__ = "earnings"
 
-    year = Column(String(4), index=True, nullable=False)
-    tournId = Column(String(16), ForeignKey("tournaments.id"), index=True, nullable=False)
-    playerID = Column(String(16), ForeignKey("players.id"), index=True, nullable=False)
+    year = Column(String(4), primary_key=True, index=True, nullable=False)
+    tourn_id = Column(String(16), ForeignKey("tournaments.tourn_id"), primary_key=True, index=True, nullable=False)
+    player_id = Column(String(16), ForeignKey("players.player_id"), primary_key=True, index=True, nullable=False)
     earnings = Column(Integer)
     timestamp = Column(DateTime, nullable=False)
 
-    tournament = relationship("Tournament", back_populates="earnings")
-    player = relationship("Player", back_populates="earnings")
+    tournament = relationship("Tournaments", back_populates="earnings")
+    player = relationship("Players", back_populates="earnings")

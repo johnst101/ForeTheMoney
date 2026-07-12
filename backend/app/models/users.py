@@ -9,7 +9,7 @@ from ..db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 
-class User(Base):
+class Users(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -22,7 +22,7 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    pools = relationship("Pools", back_populates="users")
-    pool_memberships = relationship("PoolMemberships", back_populates="users")
-    picks = relationship("PoolPicks", back_populates="users")
-    pool_leaderboard = relationship("PoolLeaderboard", back_populates="users")
+    pools = relationship("Pools", back_populates="owner", cascade="all, delete-orphan")
+    pool_memberships = relationship("PoolMemberships", back_populates="member", cascade="all, delete-orphan")
+    pool_picks = relationship("PoolPicks", back_populates="member", cascade="all, delete-orphan")
+    pool_leaderboards = relationship("PoolLeaderboards", back_populates="member", cascade="all, delete-orphan")

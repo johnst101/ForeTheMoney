@@ -6,7 +6,7 @@ from ..db.database import Base
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 
-class Tournament(Base):
+class Tournaments(Base):
     __tablename__ = "tournaments"
 
     org_id = Column(Integer, nullable=False)
@@ -28,5 +28,6 @@ class Tournament(Base):
     state = Column(String(200))
     city = Column(String(200))
 
-    schedules = relationship("Schedule", back_populates="tournament")
+    schedules = relationship("Schedules", back_populates="tournament")
     earnings = relationship("Earnings", back_populates="tournament")
+    tournament_leaderboards = relationship("TournamentLeaderboard", back_populates="tournament")
