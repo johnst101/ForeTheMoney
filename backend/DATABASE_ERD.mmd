@@ -26,10 +26,9 @@ erDiagram
     }
 
     POOL_LEADERBOARDS {
-        int id PK
-        int year
-        int pool_id FK
-        int user_id FK
+        int year PK
+        int pool_id FK, PK
+        int user_id FK, PK
         int score
         datetime updated_at
     }
@@ -65,7 +64,7 @@ erDiagram
         int id PK
         int year
         int org_id
-        int tourn_id
+        int tourn_id FK
         string name
         datetime start
         datetime end
@@ -75,17 +74,16 @@ erDiagram
     }
 
     EARNINGS {
-        string year
-        string tournId FK "FK declared to tournaments.id in model, but Tournament PK is tourn_id"
-        string playerID FK
+        string year PK
+        int tourn_id FK, PK
+        int player_id FK, PK
         int earnings
         datetime timestamp
     }
 
     POOL_MEMBERSHIPS {
-        int id PK
-        int pool_id FK
-        int user_id FK
+        int pool_id FK, PK
+        int user_id FK, PK
         string role
         datetime joined_at
         bool is_active
@@ -103,17 +101,36 @@ erDiagram
         datetime created_at
     }
 
+    TOURNAMENT_LEADERBOARD {
+        string year PK
+        int tourn_id FK, PK
+        int round_id PK
+        int player_id FK, PK
+        string org_id
+        string tourn_status
+        string round_status
+        datetime last_updated
+        string cut_line
+        string tourn_position
+        string total_score
+        string current_round_score
+        bool round_complete
+        string thru
+        datetime tee_time
+    }
+
     %% Notes:
-    %% - Earnings has no primary key defined in model.
-    %% - Earnings and PoolPicks both use tournaments.id in FK references, but Tournament defines tourn_id as the PK.
+    %% - Composite PKs now properly defined across all tables.
+    %% - All FK references now correctly point to actual PKs.
+    %% - TournamentLeaderboard added with composite PK on (year, tourn_id, round_id, player_id).
 
     USERS ||--o{ POOLS : owns
     POOLS ||--o{ POOL_LEADERBOARDS : has_scores
     USERS ||--o{ POOL_LEADERBOARDS : has_scores
 
-    TOURNAMENTS ||..o{ SCHEDULES : should_align_on_tourn_id
-    PLAYERS ||..o{ EARNINGS : should_reference
-    TOURNAMENTS ||..o{ EARNINGS : should_reference
+    TOURNAMENTS ||--o{ SCHEDULES : defines
+    PLAYERS ||--o{ EARNINGS : earns
+    TOURNAMENTS ||--o{ EARNINGS : awards
 
     POOLS ||--o{ POOL_MEMBERSHIPS : memberships
     USERS ||--o{ POOL_MEMBERSHIPS : membership
@@ -121,3 +138,6 @@ erDiagram
     USERS ||--o{ POOL_PICKS : user_picks
     TOURNAMENTS ||--o{ POOL_PICKS : tournament_picks
     PLAYERS ||--o{ POOL_PICKS : player_picks
+
+    TOURNAMENTS ||--o{ TOURNAMENT_LEADERBOARD : leaderboard
+    PLAYERS ||--o{ TOURNAMENT_LEADERBOARD : scored_in
