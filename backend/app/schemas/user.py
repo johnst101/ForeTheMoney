@@ -14,9 +14,17 @@ class UserLogin(BaseModel):
 
 # UserResponse
 class UserResponse(BaseModel):
+    id: int
     email: EmailStr
     first_name: str
     last_name: str
 
+    class Config:
+        from_attributes = True
+
+class UserLoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
     class Config:
         from_attributes = True
