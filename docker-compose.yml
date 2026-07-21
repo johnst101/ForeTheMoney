@@ -1,0 +1,14 @@
+services:
+  backend:
+    build:
+      context: ./backend      # build context is the backend/ folder
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"             # host:container — matches your current local setup
+    env_file:
+      - .env                  # loads DATABASE_URL, SECRET_KEY, etc. automatically
+    restart: unless-stopped
+
+# worker      ← future background job processor (e.g. earnings sync from PGA API)
+# redis:      ← future cache / job queue
+# nginx:      ← future local SSL proxy
