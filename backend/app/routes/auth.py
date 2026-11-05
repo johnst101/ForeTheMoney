@@ -1,19 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from app.config import settings
 from app.db.database import get_db
 from app.models.users import Users
 from app.schemas.user import UserCreate, UserLogin, UserResponse, UserLoginResponse
 from app.utils.security import hash_password, verify_password, create_jwt_token, decode_jwt_token
-import os
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import jwt
 
-load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_DAYS = int(os.getenv("ACCESS_TOKEN_EXPIRE_DAYS"))
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_DAYS = settings.access_token_expire_days
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
