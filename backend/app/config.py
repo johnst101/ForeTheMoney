@@ -7,6 +7,10 @@ except ImportError:  # pragma: no cover - boto3 is optional in local development
     boto3 = None
 
 
+class MissingRequiredSettingError(RuntimeError):
+    """Raised when a required setting cannot be resolved in a deployed environment."""
+
+
 @dataclass(frozen=True)
 class Settings:
     app_env: str = "local"
@@ -37,7 +41,8 @@ def _fetch_ssm_parameter(name: str) -> str:
     return response["Parameter"]["Value"]
 
 
-def _resolve_runtime_value(name: str, default: str, env_name: str) -> str:
+def _resolve_runtime_value(name: str, default: str, env_name: str, required: bool = False) -> str:
+    """Resolve a setting from env, then Parameter Store in stage/prod; required settings raise instead of defaulting."""
     value = os.getenv(env_name)
     if value is not None:
         return value
@@ -47,7 +52,11 @@ def _resolve_runtime_value(name: str, default: str, env_name: str) -> str:
         parameter_path = f"/forethemoney/{app_env}/{name}"
         try:
             return _fetch_ssm_parameter(parameter_path)
-        except Exception:
+        except Exception as exc:
+            if required:
+                raise MissingRequiredSettingError(
+                    f"Could not resolve required setting {name} from {parameter_path}: {exc}"
+                ) from exc
             return default
 
     return default
@@ -57,8 +66,8 @@ def get_settings() -> Settings:
     app_env = os.getenv("APP_ENV", "local")
     return Settings(
         app_env=app_env,
-        database_url=_resolve_runtime_value("DATABASE_URL", "postgresql+psycopg2://postgres:postgres@localhost:5432/forethemoney_dev", "DATABASE_URL"),
-        secret_key=_resolve_runtime_value("SECRET_KEY", "change-me-in-production", "SECRET_KEY"),
+        database_url=_resolve_runtime_value("DATABASE_URL", "postgresql+psycopg2://postgres:postgres@localhost:5432/forethemoney_dev", "DATABASE_URL", required=True),
+        secret_key=_resolve_runtime_value("SECRET_KEY", "change-me-in-production", "SECRET_KEY", required=True),
         algorithm=_resolve_runtime_value("ALGORITHM", "HS256", "ALGORITHM"),
         access_token_expire_days=_get_int_env(
             "ACCESS_TOKEN_EXPIRE_DAYS",
