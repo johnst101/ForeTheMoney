@@ -22,3 +22,9 @@ app.include_router(auth_router)
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    """Liveness probe for deployment validation; deliberately does not touch the database."""
+    return {"status": "ok"}

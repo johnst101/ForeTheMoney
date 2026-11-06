@@ -55,6 +55,28 @@ Define a simple deployment model for the backend service that uses separate envi
 - The app should be tested against the correct environment-specific database branch, not only a local fallback configuration.
 - Prior art for the test approach is the project’s existing environment-driven configuration model, which already provides a natural boundary for external validation.
 
+## Running on the host
+
+The stage/prod stack is defined in `docker-compose.deploy.yml` (Nginx in front of a prebuilt backend image). Local development keeps using `docker-compose.yml`.
+
+Required environment variables:
+
+- `BACKEND_IMAGE`: ECR image URI and tag, e.g. `<account>.dkr.ecr.<region>.amazonaws.com/forethemoney-backend:<tag>`.
+- `APP_ENV`: `stage` or `prod`. The app reads secrets from Parameter Store under `/forethemoney/<APP_ENV>/`; the stack fails to start if `DATABASE_URL` or `SECRET_KEY` can't be resolved.
+- `AWS_REGION`: region of the Parameter Store parameters.
+
+Start the stack from the repository root, then smoke test it:
+
+```bash
+export BACKEND_IMAGE=... APP_ENV=stage AWS_REGION=us-east-2
+docker compose -f docker-compose.deploy.yml up -d --wait
+python3 scripts/smoke_test.py http://localhost
+```
+
+The smoke test exits 0 only if `GET /health` returns `200 {"status": "ok"}`. Only Nginx publishes a host port (80); the backend is reachable only on the compose network. Nginx config lives in `deploy/nginx/default.conf`.
+
+Containers reach the instance role credentials through the EC2 metadata service, so the instance must allow a metadata hop limit of at least 2 (IMDSv2).
+
 ## Out of Scope
 
 - Building a multi-service platform beyond the backend and reverse-proxy layer.
