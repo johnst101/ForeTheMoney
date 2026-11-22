@@ -37,3 +37,23 @@ A lightweight endpoint or probe used to confirm that the application is acceptin
 
 ## Database branch
 A separate database instance or logical environment for a given deployment context, such as a Neon branch for stage or prod.
+
+## Golf pool language
+
+**League**:
+A group of members competing against one another under shared tournament and scoring settings. The existing database calls this a pool.
+
+**League member**:
+A person competing in a league. A person can belong to more than one league.
+
+**Golfer**:
+A PGA Tour competitor whom a league member can select for a tournament.
+
+**Tier**:
+A group of golfers in a tournament field from which a league member can make a pick.
+
+**Pick**:
+A league member's selection of a golfer for a tournament and tier.
+
+**Quarter**:
+One of four league-defined portions of a season used to determine a quarter winner.
