@@ -39,6 +39,20 @@ If a command is not available or setup is incomplete, report what blocked valida
 - Keep summaries concise and concrete.
 - For reviews, prioritize bugs, regressions, and missing tests.
 
+## Agent skills
+
+### Issue tracker
+
+GitHub issues for this repo live in the repository’s GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default triage labels are `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo layout. See `docs/agents/domain.md`.
+
 ## Maintenance
 - Review this file every 2 to 4 weeks or after major project changes.
 - Keep entries short, actionable, and specific to this repository.

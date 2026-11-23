@@ -1,33 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from app.config import settings
 from app.db.database import get_db
 from app.models.users import Users
 from app.schemas.user import UserCreate, UserLogin, UserResponse, UserLoginResponse
 from app.utils.security import hash_password, verify_password, create_jwt_token, decode_jwt_token
-import os
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import jwt
 
-load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_DAYS = int(os.getenv("ACCESS_TOKEN_EXPIRE_DAYS"))
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_DAYS = settings.access_token_expire_days
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
-def get_current_user_dependency(authorization: str = Header(...), db: Session = Depends(get_db)):
-    # Extract token from "Bearer <token>"
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization header")
-    token = authorization.split(" ")[1]
-    # Decode it
+http_bearer = HTTPBearer()
+
+def get_current_user_dependency(credentials: HTTPAuthorizationCredentials = Depends(http_bearer), db: Session = Depends(get_db)):
+    token = credentials.credentials  # HTTPBearer strips the "Bearer " prefix automatically
     try:
         decoded_token = decode_jwt_token(token, SECRET_KEY, [ALGORITHM])
     except jwt.PyJWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-    # Query user from DB using user_id from token
     user_id = decoded_token.get("user_id")
     if not user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
@@ -35,7 +31,6 @@ def get_current_user_dependency(authorization: str = Header(...), db: Session = 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    # Return user or raise HTTPException
     return user
     
 
